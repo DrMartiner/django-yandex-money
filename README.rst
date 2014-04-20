@@ -30,7 +30,7 @@ django-yandex-money
 
 #. Добавить в `urls.py`__:
 
-    ... code:: python
+    .. code:: python
 
     urlpatterns = patterns('',
         # ...
@@ -41,7 +41,7 @@ django-yandex-money
 
 #. Указать в `settings` следующие параметры__:
 
-    ... code:: python
+    .. code:: python
 
     YANDEX_MONEY_DEBUG = False
     YANDEX_MONEY_SCID = 12345
