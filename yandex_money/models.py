@@ -46,7 +46,7 @@ class Payment(models.Model):
                              verbose_name='Пользователь')
     custome_number = models.CharField('Номер заказа',
                                       unique=True, max_length=64,
-                                      default=str(uuid4()).replace('-', ''))
+                                      default=lambda: str(uuid4()).replace('-', ''))
     status = models.CharField('Результата', max_length=16,
                               choices=STATUS.CHOICES,
                               default=STATUS.PROCESSED)

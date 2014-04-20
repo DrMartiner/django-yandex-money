@@ -3,6 +3,7 @@
 from hashlib import md5
 from django import forms
 from django.conf import settings
+from .models import Payment
 
 
 class BasePaymentForm(forms.Form):
@@ -49,10 +50,13 @@ class BasePaymentForm(forms.Form):
             (CPAYMENT, 'Уведомления о переводе'),
         )
 
-    shopId = forms.IntegerField(min_value=1)
-    scid = forms.IntegerField()
+    shopId = forms.IntegerField(initial=settings.YANDEX_MONEY_SHOP_ID)
+    scid = forms.IntegerField(initial=settings.YANDEX_MONEY_SCID)
     customerNumber = forms.CharField(min_length=1, max_length=64)
-    paymentType = forms.CharField(min_length=2, max_length=2)
+    paymentType = forms.CharField(label='Способ оплаты',
+                                  widget=forms.Select(choices=Payment.PAYMENT_TYPE.CHOICES),
+                                  min_length=2, max_length=2,
+                                  initial=Payment.PAYMENT_TYPE.PC)
     orderSumBankPaycash = forms.IntegerField()
 
     md5 = forms.CharField(min_length=32, max_length=32)
@@ -94,23 +98,35 @@ class BasePaymentForm(forms.Form):
 
 
 class PaymentForm(BasePaymentForm):
-    display_field_names = ['sum', 'cps_email', 'cps_phone']
+    def get_display_field_names(self):
+        return ['paymentType', 'cps_email', 'cps_phone']
 
-    sum = forms.FloatField()
+    sum = forms.FloatField(label='Сумма заказа')
 
-    cps_email = forms.EmailField(required=False)
-    cps_phone = forms.CharField(max_length=15, required=False)
+    cps_email = forms.EmailField(label='Email', required=False)
+    cps_phone = forms.CharField(label='Телефон',
+                                max_length=15, required=False)
 
     shopFailURL = forms.URLField(initial=settings.YANDEX_MONEY_FAIL_URL)
     shopSuccessURL = forms.URLField(initial=settings.YANDEX_MONEY_SUCCESS_URL)
 
     def __init__(self, *args, **kwargs):
+        instance = kwargs.pop('instance')
         super(PaymentForm, self).__init__(*args, **kwargs)
+
+        self.fields.pop('md5')
+        self.fields.pop('action')
+        self.fields.pop('orderSumBankPaycash')
 
         if not getattr(settings, 'YANDEX_MONEY_DEBUG', False):
             for name in self.fields:
-                if name not in self.display_field_names:
+                if name not in self.get_display_field_names():
                     self.fields[name].widget = forms.HiddenInput()
+
+        if instance:
+            self.fields['sum'].initial = instance.order_amount
+            self.fields['paymentType'].initial = instance.payment_type
+            self.fields['customerNumber'].initial = instance.custome_number
 
 
 class CheckForm(BasePaymentForm):
