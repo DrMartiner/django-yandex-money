@@ -62,3 +62,54 @@ django-yandex-money
 Использование
 -------------
 
+. _Полный пример использования: https://github.com/DrMartiner/django-yandex-money/tree/develop/example
+
+#. Представление платежной формы:
+
+    .. code:: python
+
+        # -*- coding: utf-8 -*-
+
+        from django.views.generic import TemplateView
+        from yandex_money.forms import PaymentForm
+        from yandex_money.models import Payment
+
+
+        class OrderPage(TemplateView):
+            template_name = 'order_page.html'
+
+            def get_context_data(self, **kwargs):
+                payment = Payment(order_amount=123)
+                payment.save()
+
+                ctx = super(OrderPage, self).get_context_data(**kwargs)
+                ctx['form'] = PaymentForm(instance=payment)
+                return ctx
+
+#. Шаблон платежной формы:
+
+    .. code:: html
+
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                <meta charset="utf-8">
+            </head>
+            <body>
+                <div style="border: 1px dotted gray; padding: 15px 15px 0; margin: 30px auto; width: 300px;">
+                    <form name="ShopForm" method="POST" action="https://yandex.ru/eshop.xml">
+                        <ul style="list-style: none;">
+                            <li style="margin-bottom: 20px;">
+                                Сумма заказа: <b>{{ form.sum.value }}</b>
+                            </li>
+
+                            {{ form.as_ul|safe }}
+
+                            <li style="margin-top: 20px;">
+                                <input type="submit" value="Оплатить">
+                            </li>
+                        </ul>
+                    </form>
+                </div>
+            </body>
+        </html>
