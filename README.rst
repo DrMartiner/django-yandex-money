@@ -11,13 +11,13 @@ django-yandex-money
 
         pip install django-yandex-money
 
-#.  Добавить `yandex_money` в `settings.INSTALLED_APPS`__:
+#.  Добавить ``yandex_money`` в ``settings.INSTALLED_APPS``:
 
     .. code:: python
 
         INSTALLED_APPS = (
             ...
-            yandex_money,
+            'yandex_money',
             ...
         )
 
@@ -28,7 +28,7 @@ django-yandex-money
         python manage.py syncdb
         python manage.py migrate # для тех, кто использует south
 
-#. Добавить в `urls.py`:
+#. Добавить в ``urls.py``:
 
     .. code:: python
 
@@ -52,10 +52,11 @@ django-yandex-money
 
 
 #. Указать в рабочем Яндекс-денег кабинете натсрйоки для приема уведомлений:
-    * paymentAvisoURL: https://example.com/yandex-money/aviso/
-    * checkURL: https://example.com/yandex-money/check/
-    * failURL: https://example.com/fail-payment/
-    * successURL: https://example.com/success-payment/
+
+* paymentAvisoURL: https://example.com/yandex-money/aviso/
+* checkURL: https://example.com/yandex-money/check/
+* failURL: https://example.com/fail-payment/
+* successURL: https://example.com/success-payment/
 
 
 Использование
