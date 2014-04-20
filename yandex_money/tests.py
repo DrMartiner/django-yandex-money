@@ -104,7 +104,7 @@ class NoticePaymentTest(WebTest):
         self.payment = Payment(order_amount=87.1)
         self.payment.save()
 
-        self.url = reverse('yandex_money_notice')
+        self.url = reverse('yandex_money_aviso')
 
     def test_notice(self):
         params = self.params.copy()
