@@ -93,22 +93,23 @@ class BasePaymentForm(forms.Form):
         return shop_id
 
 
-class PaymentForm(forms.Form):
+class PaymentForm(BasePaymentForm):
+    display_field_names = ['sum', 'cps_email', 'cps_phone']
+
     sum = forms.FloatField()
-    shopId = forms.IntegerField()
-    customerNumber = forms.CharField(min_length=1, max_length=64)
-    paymentType = forms.CharField(min_length=2, max_length=2)
-    orderSumBankPaycash = forms.IntegerField()
 
     cps_email = forms.EmailField(required=False)
     cps_phone = forms.CharField(max_length=15, required=False)
+
+    shopFailURL = forms.URLField(initial=settings.YANDEX_MONEY_FAIL_URL)
+    shopSuccessURL = forms.URLField(initial=settings.YANDEX_MONEY_SUCCESS_URL)
 
     def __init__(self, *args, **kwargs):
         super(PaymentForm, self).__init__(*args, **kwargs)
 
         if not getattr(settings, 'YANDEX_MONEY_DEBUG', False):
             for name in self.fields:
-                if name != 'paymentType':
+                if name not in self.display_field_names:
                     self.fields[name].widget = forms.HiddenInput()
 
 
@@ -128,3 +129,5 @@ class NoticeForm(BasePaymentForm):
     shopSumAmount = forms.DecimalField(min_value=0, decimal_places=2)
     shopSumCurrencyPaycash = forms.IntegerField()
     paymentPayerCode = forms.IntegerField(min_value=1)
+    cps_email = forms.EmailField(required=False)
+    cps_phone = forms.CharField(max_length=15, required=False)

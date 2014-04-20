@@ -16,7 +16,7 @@ class OrderPage(TemplateView):
         count = randint(1, 4)
         amount = count * goods.price
 
-        payment = Payment(Sum=amount)
+        payment = Payment(order_amount=amount)
         payment.save()
 
         order = Order(goods=goods, payment=payment,

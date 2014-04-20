@@ -32,8 +32,9 @@ class CheckPaymentTest(WebTest):
     }
 
     def setUp(self):
-        self.payment = Payment(order_amount=87.1,
-                          scid=settings.YANDEX_MONEY_SCID)
+        self.url = reverse('yandex_money_check')
+
+        self.payment = Payment(order_amount=87.1)
         self.payment.save()
 
     def test_check(self):
@@ -41,14 +42,13 @@ class CheckPaymentTest(WebTest):
         params['customerNumber'] = self.payment.custome_number
         params['md5'] = BasePaymentForm.make_md5(params)
 
-        url = reverse('yandex_money_check')
-        res = self.app.post(url, params=params)
+        res = self.app.post(self.url, params=params)
 
         self.assertEquals(res.content_type, 'application/xml',
                           'Content type is not XML')
 
         attrs = etree.fromstring(res.content).attrib
-        self.assertEquals(attrs['code'], '0', 'Code is not succes')
+        self.assertEquals(attrs['code'], '0', 'Code is not success')
         self.assertEquals(attrs['shopId'], params['shopId'],
                           'ShopID is not valid')
         self.assertEquals(attrs['invoiceId'], params['invoiceId'],
@@ -60,8 +60,7 @@ class CheckPaymentTest(WebTest):
         params['customerNumber'] = self.payment.custome_number
         params['md5'] = '202CB962AC59075B964B07152D234B71'
 
-        url = reverse('yandex_money_check')
-        res = self.app.post(url, params=params)
+        res = self.app.post(self.url, params=params)
 
         attrs = etree.fromstring(res.content).attrib
         self.assertEquals(attrs['code'], '1',
@@ -74,8 +73,7 @@ class CheckPaymentTest(WebTest):
         params['scid'] = 100500
         params['md5'] = BasePaymentForm.make_md5(params)
 
-        url = reverse('yandex_money_check')
-        res = self.app.post(url, params=params)
+        res = self.app.post(self.url, params=params)
 
         attrs = etree.fromstring(res.content).attrib
         self.assertEquals(attrs['code'], '200',
@@ -84,7 +82,59 @@ class CheckPaymentTest(WebTest):
 
 
 class NoticePaymentTest(WebTest):
-    pass
+    params = {
+        'scid': str(settings.YANDEX_MONEY_SCID),
+        'requestDatetime': '2011-05-04T20:38:00.000+04:00',
+        'action': 'paymentAviso',
+        'shopId': str(settings.YANDEX_MONEY_SHOP_ID),
+        'shopArticleId': '456',
+        'invoiceId': '1234567',
+        'orderCreatedDatetime': '2011-05-04T20:38:00.000+04:00',
+        'orderSumAmount': '87.10',
+        'orderSumCurrencyPaycash': '643',
+        'orderSumBankPaycash': '1001',
+        'shopSumAmount': '86.23',
+        'shopSumCurrencyPaycash': '643',
+        'shopSumBankPaycash': '1001',
+        'paymentPayerCode': '42007148320',
+        'paymentType': 'GP',
+    }
+
+    def setUp(self):
+        self.payment = Payment(order_amount=87.1)
+        self.payment.save()
+
+        self.url = reverse('yandex_money_notice')
+
+    def test_notice(self):
+        params = self.params.copy()
+        params['customerNumber'] = self.payment.custome_number
+        params['md5'] = BasePaymentForm.make_md5(params)
+
+        res = self.app.post(self.url, params=params)
+
+        self.assertEquals(res.content_type, 'application/xml',
+                          'Content type is not XML')
+
+        attrs = etree.fromstring(res.content).attrib
+        self.assertEquals(attrs['code'], '0', 'Code is not success')
+        self.assertEquals(attrs['shopId'], params['shopId'],
+                          'ShopID is not valid')
+        self.assertEquals(attrs['invoiceId'], params['invoiceId'],
+                          'InvoiceId is not valid')
+        self.assertEquals(len(attrs), 4, 'Response has excess attrs')
+
+        payment = Payment.objects.get(pk=self.payment.pk)
+        self.assertEquals(str(payment.order_currency),
+                          params['orderSumCurrencyPaycash'])
+        self.assertEquals(str(payment.shop_amount),
+                          params['shopSumAmount'])
+        self.assertEquals(str(payment.shop_currency),
+                          params['shopSumCurrencyPaycash'])
+        self.assertEquals(payment.payer_code,
+                          params['paymentPayerCode'])
+        self.assertEquals(payment.payment_type,
+                          params['paymentType'])
 
 
 class Md5HashTest(WebTest):

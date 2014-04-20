@@ -34,7 +34,7 @@ class Payment(models.Model):
         )
 
     class CURRENCY:
-        RUB = 634
+        RUB = 643
         TEST = 10643
 
         CHOICES = (
@@ -61,9 +61,11 @@ class Payment(models.Model):
     invoice_id = models.PositiveIntegerField('Номер транзакции оператора',
                                              blank=True, null=True)
     order_amount = models.FloatField('Сумма заказа')
-    shop_amount = models.FloatField('Сумма полученная на р/с',
-                                    blank=True, null=True,
-                                    help_text='За вычетом процента оператора')
+    shop_amount = models.DecimalField('Сумма полученная на р/с',
+                                      max_digits=5,
+                                      decimal_places=2,
+                                      blank=True, null=True,
+                                      help_text='За вычетом процента оператора')
 
     order_currency = models.PositiveIntegerField('Валюта',
                                                  default=CURRENCY.RUB,

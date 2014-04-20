@@ -63,8 +63,8 @@ YANDEX_MONEY_SCID = 123
 YANDEX_MONEY_SHOP_ID = 456
 YANDEX_MONEY_SHOP_PASSWORD = 'password'
 YANDEX_MONEY_DEBUG = DEBUG
-YANDEX_MONEY_SUCCESS_URL = ''
-YANDEX_MONEY_FAIL_URL = ''
+YANDEX_MONEY_FAIL_URL = 'http://example.com/fail-payment/'
+YANDEX_MONEY_SUCCESS_URL = 'http://example.com/success-payment/'
 
 try:
     from settings_local import *
