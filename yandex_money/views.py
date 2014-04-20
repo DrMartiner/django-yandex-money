@@ -27,10 +27,9 @@ class CheckOrderView(BaseView):
         if form.is_valid():
             cd = form.cleaned_data
             if form.check_md5(cd):
-                user = get_object_or_None(User, pk=cd['customerNumber'])
-                payment = get_object_or_None(Payment, user=user,
-                                             scid=cd['scid'],
-                                             shop_id=cd['shopId'])
+                payment = get_object_or_None(Payment,
+                                             custome_number=cd['customerNumber'],
+                                             scid=cd['scid'], shop_id=cd['shopId'])
 
                 if payment:
                     now = datetime.now()

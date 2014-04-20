@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from uuid import uuid4
 from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -41,7 +42,11 @@ class Payment(models.Model):
             (TEST, 'Тестовая валюта'),
         )
 
-    user = models.ForeignKey(User, verbose_name='Пользователь')
+    user = models.ForeignKey(User, blank=True, null=True,
+                             verbose_name='Пользователь')
+    custome_number = models.CharField('Номер заказа',
+                                      unique=True, max_length=64,
+                                      default=str(uuid4()).replace('-', ''))
     status = models.CharField('Результата', max_length=16,
                               choices=STATUS.CHOICES,
                               default=STATUS.PROCESSED)

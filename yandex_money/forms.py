@@ -51,7 +51,7 @@ class BasePaymentForm(forms.Form):
 
     shopId = forms.IntegerField(min_value=1)
     scid = forms.IntegerField()
-    customerNumber = forms.IntegerField(min_value=1)
+    customerNumber = forms.CharField(min_length=1, max_length=64)
     paymentType = forms.CharField(min_length=2, max_length=2)
     orderSumBankPaycash = forms.IntegerField()
 
@@ -69,7 +69,7 @@ class BasePaymentForm(forms.Form):
                   str(cd['orderSumBankPaycash']),
                   str(cd['shopId']),
                   str(cd['invoiceId']),
-                  str(cd['customerNumber']),
+                  cd['customerNumber'],
                   settings.YANDEX_MONEY_SHOP_PASSWORD]
         s = str(';'.join(params))
         return md5(s).hexdigest().upper()
@@ -96,7 +96,7 @@ class BasePaymentForm(forms.Form):
 class PaymentForm(forms.Form):
     sum = forms.FloatField()
     shopId = forms.IntegerField()
-    customerNumber = forms.IntegerField()
+    customerNumber = forms.CharField(min_length=1, max_length=64)
     paymentType = forms.CharField(min_length=2, max_length=2)
     orderSumBankPaycash = forms.IntegerField()
 

@@ -32,16 +32,13 @@ class CheckPaymentTest(WebTest):
     }
 
     def setUp(self):
-        self.user, created = User.objects.get_or_create(username='test')
+        self.payment = Payment(order_amount=87.1,
+                          scid=settings.YANDEX_MONEY_SCID)
+        self.payment.save()
 
     def test_check(self):
-        payment = Payment(order_amount=87.1,
-                          user=self.user,
-                          scid=settings.YANDEX_MONEY_SCID)
-        payment.save()
-
         params = self.params.copy()
-        params['customerNumber'] = str(self.user.pk)
+        params['customerNumber'] = self.payment.custome_number
         params['md5'] = BasePaymentForm.make_md5(params)
 
         url = reverse('yandex_money_check')
@@ -56,15 +53,11 @@ class CheckPaymentTest(WebTest):
                           'ShopID is not valid')
         self.assertEquals(attrs['invoiceId'], params['invoiceId'],
                           'InvoiceId is not valid')
+        self.assertEquals(len(attrs), 4, 'Response has excess attrs')
 
     def test_bad_md5(self):
-        payment = Payment(order_amount=87.1,
-                          user=self.user,
-                          scid=settings.YANDEX_MONEY_SCID)
-        payment.save()
-
         params = self.params.copy()
-        params['customerNumber'] = str(self.user.pk)
+        params['customerNumber'] = self.payment.custome_number
         params['md5'] = '202CB962AC59075B964B07152D234B71'
 
         url = reverse('yandex_money_check')
@@ -76,13 +69,8 @@ class CheckPaymentTest(WebTest):
         self.assertEquals(len(attrs), 1, 'Response has excess attrs')
 
     def test_bad_data(self):
-        payment = Payment(order_amount=87.1,
-                          user=self.user,
-                          scid=settings.YANDEX_MONEY_SCID)
-        payment.save()
-
         params = self.params.copy()
-        params['customerNumber'] = str(self.user.pk)
+        params['customerNumber'] = self.payment.custome_number
         params['scid'] = 100500
         params['md5'] = BasePaymentForm.make_md5(params)
 
