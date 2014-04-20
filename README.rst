@@ -62,7 +62,7 @@ django-yandex-money
 Использование
 -------------
 
-. _Полный пример использования: https://github.com/DrMartiner/django-yandex-money/tree/develop/example
+.. _a Полный пример использования: https://github.com/DrMartiner/django-yandex-money/tree/develop/example
 
 #. Представление платежной формы:
 
