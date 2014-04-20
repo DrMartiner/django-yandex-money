@@ -3,6 +3,8 @@
 from uuid import uuid4
 from django.db import models
 from django.conf import settings
+from .signals import payment_process
+from .signals import payment_completed
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -92,6 +94,13 @@ class Payment(models.Model):
     @property
     def is_payed(self):
         return getattr(self, 'status', '') == self.STATUS.SUCCESS
+
+    def send_signals(self):
+        status = self.status
+        if status == self.STATUS.PROCESSED:
+            payment_process.send(sender=self)
+        if status == self.STATUS.SUCCESS:
+            payment_completed.send(sender=self)
 
     class Meta:
         ordering = ('pub_date',)

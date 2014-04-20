@@ -31,6 +31,7 @@ class BaseView(View):
                 payment = self.get_payment(cd)
                 params = self.get_response_params(payment, cd)
                 self.mark_payment(payment, cd)
+                payment.send_signals()
             else:
                 params = {'code': '1'}
         else:
