@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <div style="border: 1px dotted gray; padding: 15px 15px 0; margin: 30px auto; width: 300px;">
+            <form name="ShopForm" method="POST" action="https://demomoney.yandex.ru/eshop.xml">
+                <ul style="list-style: none;">
+                    <li style="margin-bottom: 20px;">
+                        Сумма заказа: <b>{{ form.Sum.value }}</b>
+                    </li>
+
+                    {{ form.as_ul|safe }}
+
+                    <li style="margin-top: 20px;">
+                        <input type="submit" value="Оплатить">
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </body>
+</html>
