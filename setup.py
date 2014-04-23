@@ -11,7 +11,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 setup(
     name='django-yandex-money',
     version=__version__,
-    packages=['yandexmaps_widget'],
+    packages=['yandex_money'],
     url='https://github.com/DrMartiner/django-yandex-money',
     license='MIT',
     author=__author__,
