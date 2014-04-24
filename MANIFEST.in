@@ -1,3 +1,4 @@
 include *.py
 exclude *.pyc
+exclude fabfile.py
 recursive-include yandex_money/migrations *.py
