@@ -31,17 +31,19 @@ class BaseView(View):
             cd = form.cleaned_data
             if form.check_md5(cd):
                 payment = self.get_payment(cd)
-                params = self.get_response_params(payment, cd)
-                self.mark_payment(payment, cd)
-                payment.send_signals()
+                if payment:
+                    params = self.get_response_params(payment, cd)
+                    self.mark_payment(payment, cd)
+                    payment.send_signals()
+                else:
+                    params = {'code': '1000'}
             else:
                 params = {'code': '1'}
         else:
             params = {'code': '200'}
 
-        message = 'Action %s has code %s for customerNumber "%s"' % (request.POST.get('action', ''), params['code'],
-                                                                     request.POST.get('customerNumber', ''))
-        logger.info(message)
+        self.logging(request, params)
+
         content = self.get_xml(params)
         return HttpResponse(content, content_type='application/xml')
 
@@ -72,6 +74,12 @@ class BaseView(View):
                               pretty_print=True,
                               xml_declaration=True,
                               encoding='UTF-8')
+
+    def logging(self, request, params):
+        message = 'Action %s has code %s for customerNumber "%s"' % (
+            request.POST.get('action', ''), params['code'],
+            request.POST.get('customerNumber', ''))
+        logger.info(message)
 
 
 class CheckOrderFormView(BaseView):
