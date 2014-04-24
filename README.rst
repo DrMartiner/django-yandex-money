@@ -114,3 +114,52 @@ django-yandex-money
                 </div>
             </body>
         </html>
+
+#. Также вы можете определить logger 'yandex_money':
+
+    .. code:: python
+
+        LOGGING = {
+            'version': 1,
+            'disable_existing_loggers': True,
+            'root': {
+                'level': 'INFO',
+                'handlers': ['default'],
+            },
+            'formatters': {
+                'simple': {
+                    'format': '[%(asctime)s] %(levelname)s: %(message)s',
+                    'datefmt': '%d/%m/%Y %H:%M:%S',
+                },
+            },
+            'handlers':
+                'default': {
+                    'level': 'DEBUG',
+                    'class': 'logging.handlers.RotatingFileHandler',
+                    'filename': os.path.join(LOGGING_DIR, 'messages.log'),
+                    'maxBytes': 1024 * 1024 * 5,
+                    'backupCount': 5,
+                    'formatter': 'message',
+                },
+                'yandex_money': {
+                    'level': 'DEBUG',
+                    'class': 'logging.handlers.RotatingFileHandler',
+                    'filename': os.path.join(LOGGING_DIR, 'yandex_money.log'),
+                    'maxBytes': 1024 * 1024 * 5,
+                    'backupCount': 5,
+                    'formatter': 'standard',
+                },
+            },
+            'loggers': {
+                '': {
+                    'handlers': ['default'],
+                    'level': 'INFO',
+                    'propagate': True
+                },
+                'yandex_money': {
+                    'handlers': ['yandex_money'],
+                    'level': 'DEBUG',
+                    'propagate': False
+                },
+            }
+        }

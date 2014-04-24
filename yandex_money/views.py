@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 from lxml import etree
 from lxml.builder import E
 from .forms import CheckForm
@@ -14,6 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Payment
 
 User = get_user_model()
+logger = logging.getLogger('yandex_money')
 
 
 class BaseView(View):
@@ -37,6 +39,9 @@ class BaseView(View):
         else:
             params = {'code': '200'}
 
+        message = 'Action %s has code %s for customerNumber "%s"' % (request.POST.get('action', ''), params['code'],
+                                                                     request.POST.get('customerNumber', ''))
+        logger.info(message)
         content = self.get_xml(params)
         return HttpResponse(content, content_type='application/xml')
 
