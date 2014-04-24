@@ -4,7 +4,7 @@ import os
 from distutils.core import setup
 
 __author__ = 'Alexey Kuzmin'
-__version__ = '0.9'
+__version__ = '1.1'
 
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
@@ -16,6 +16,7 @@ setup(
     license='MIT',
     author=__author__,
     author_email='DrMartiner@GMail.Com',
+    keywords=['django', 'yandex', 'money', 'payment', 'pay'],
     description='Integrating django project with yandex-money',
     classifiers=[
         'Environment :: Web Environment',

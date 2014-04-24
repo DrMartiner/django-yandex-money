@@ -1,0 +1,3 @@
+include *.py
+exclude *.pyc
+recursive-include yandex_money/migrations *.py
