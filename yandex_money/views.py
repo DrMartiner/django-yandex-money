@@ -69,11 +69,14 @@ class BaseView(View):
         pass
 
     def get_xml(self, params):
-        element = E.checkOrderResponse(**params)
+        element = self.get_xml_element(**params)
         return etree.tostring(element,
                               pretty_print=True,
                               xml_declaration=True,
                               encoding='UTF-8')
+
+    def get_xml_element(self, **params):
+        raise NotImplementedError()
 
     def logging(self, request, params):
         message = 'Action %s has code %s for customerNumber "%s"' % (
@@ -85,9 +88,15 @@ class BaseView(View):
 class CheckOrderFormView(BaseView):
     form_class = CheckForm
 
+    def get_xml_element(self, **params):
+        return E.checkOrderResponse(**params)
+
 
 class NoticeFormView(BaseView):
     form_class = NoticeForm
+
+    def get_xml_element(self, **params):
+        return E.paymentAvisoResponse(**params)
 
     def mark_payment(self, payment, cd):
         payment.cps_email = cd.get('cps_email', '')
