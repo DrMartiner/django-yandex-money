@@ -64,7 +64,7 @@ class Payment(models.Model):
                                              blank=True, null=True)
     order_amount = models.FloatField('Сумма заказа')
     shop_amount = models.DecimalField('Сумма полученная на р/с',
-                                      max_digits=5,
+                                      max_digits=15,
                                       decimal_places=2,
                                       blank=True, null=True,
                                       help_text='За вычетом процента оператора')
