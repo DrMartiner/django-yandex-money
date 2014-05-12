@@ -10,4 +10,5 @@ yandex_money/urls.py
 yandex_money/utils.py
 yandex_money/views.py
 yandex_money/migrations/0001_initial.py
+yandex_money/migrations/0002_auto__chg_field_payment_shop_amount.py
 yandex_money/migrations/__init__.py
