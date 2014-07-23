@@ -5,9 +5,12 @@ from django.db import models
 from django.conf import settings
 from .signals import payment_process
 from .signals import payment_completed
-from django.contrib.auth import get_user_model
 
-User = get_user_model()
+try:
+    User = settings.AUTH_USER_MODEL
+except (ImportError, AttributeError):
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
 
 
 class Payment(models.Model):
