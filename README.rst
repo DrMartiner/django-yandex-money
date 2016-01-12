@@ -1,6 +1,8 @@
 django-yandex-money
 ===================
 
+Приложение перееахоло `сюда <https://github.com/DrMartiner/django-yandex-kassa>`_
+
 `Документация <https://money.yandex.ru/doc.xml?id=526025>`_ для по интеграции
 
 Установка
