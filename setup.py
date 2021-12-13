@@ -32,7 +32,7 @@ setup(
     install_requires=[
         'Django>1.5',
         'South==0.8.4',
-        'lxml==3.3.4',
+        'lxml==4.6.5',
         'django-webtest==1.7.7',
         'webtest==2.0.15',
         'django-annoying',
